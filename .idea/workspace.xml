@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="104867a6-5405-442c-8ad2-852aefe5afcd" name="Changes" comment="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции">
+      <change afterPath="$PROJECT_DIR$/src/db/backend/errors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/backend/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/backend/memory.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3Anh5M2I1Yt2MGl22uoB17aI7bn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
+    &quot;Python.memory.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;task3&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ASUS/pioa-m7o-113bv-25&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="memory" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pioa-m7o-113bv-25" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/db/backend" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/db/backend/memory.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.memory" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-4762d8aabb82-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.30387.173" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="104867a6-5405-442c-8ad2-852aefe5afcd" name="Changes" comment="" />
+      <created>1773234059863</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773234059863</updated>
+      <workItem from="1773234061130" duration="46000" />
+      <workItem from="1773240437894" duration="344000" />
+      <workItem from="1773583758597" duration="3403000" />
+      <workItem from="1774460332651" duration="7000" />
+    </task>
+    <task id="LOCAL-00001" summary="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции">
+      <option name="closed" value="true" />
+      <created>1778492014657</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778492014657</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции">
+      <option name="closed" value="true" />
+      <created>1778492543599</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778492543599</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="task2" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции" />
+    <option name="LAST_COMMIT_MESSAGE" value="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции" />
+  </component>
+</project>

@@ -1,82 +1,95 @@
-books = []
-next_id = 1
-def create_book(title, author, year, genre):
-    global next_id
-    if year < 0 or year > 2026:
-            print("Ошибка: некорректный год!")
-            return None
-    if not title or not title.strip():
-        print("Ошибка: название не может быть пустым!")
-        return None
-    if not author or not author.strip():
-        print("Ошибка: автор не может быть пустым!")
-        return None
+from typing import Optional
+from .errors import InvalidYearError, DuplicateIDError
 
-    new_book = {
-        "id": next_id,
-        "title": title.strip(),
-        "author": author.strip(),
-        "year": year,
-        "genre": genre.strip()
-    }
-
-    books.append(new_book)
-    next_id = next_id + 1
-
-    print("Книга добавлена! ID: {new_book['id']}")
-    return new_book
-
-def get_all_books():
-    return books
-
-def find_books(title=None, author=None, year=None, genre=None):
-    result = []
-    for book in books:
-        if title is not None and book["title"] != title:
-            continue
-        if author is not None and book["author"] != author:
-            continue
-        if year is not None and book["year"] != year:
-            continue
-        if genre is not None and book["genre"] != genre:
-            continue
-
-        result.append(book)
-
-    return result
-
-def update_book(book_id, title=None, author=None, year=None, genre=None):
-    for book in books:
-        if book["id"] == book_id:
-            if title is not None:
-                book["title"] = title.strip()
-            if author is not None:
-                book["author"] = author.strip()
-            if year is not None:
-                if year < 0 or year > 2026:
-                    print("Ошибка: некорректный год!")
-                    return False
-                book["year"] = year
-            if genre is not None:
-                book["genre"] = genre.strip()
-
-            print(f"Книга с ID {book_id} обновлена!")
-            return True
-
-    print(f"Ошибка: книга с ID {book_id} не найдена!")
-    return False
+type BookRecord = tuple[int, str, str, int, str]
 
 
-def delete_book(book_id):
-    global books
+class BookTable:
+    def __init__(self) -> None:
+        self._records: list[BookRecord] = []
 
-    # Ищем индекс книги
-    for i, book in enumerate(books):
-        if book["id"] == book_id:
-            books.pop(i)
-            print(f"Книга с ID {book_id} удалена!")
-            return True
+    def create_record(
+        self,
+        book_id: int,
+        title: str,
+        author: str,
+        year: int,
+        genre: str,
+    ) -> BookRecord:
+        if year < 0:
+            raise InvalidYearError("Поле year не может быть отрицательным.")
 
-    print(f"Ошибка: книга с ID {book_id} не найдена!")
-    return False
+        if any(record[0] == book_id for record in self._records):
+            raise DuplicateIDError(f"Запись с id={book_id} уже существует.")
 
+        new_record: BookRecord = (
+            book_id,
+            title.strip(),
+            author.strip(),
+            year,
+            genre.strip(),
+        )
+        self._records.append(new_record)
+        return new_record
+
+    def select_record(
+        self,
+        book_id: Optional[int] = None,
+        title: Optional[str] = None,
+        author: Optional[str] = None,
+        year: Optional[int] = None,
+        genre: Optional[str] = None,
+    ) -> list[BookRecord]:
+        if all(param is None for param in [book_id, title, author, year, genre]):
+            return self._records.copy()
+
+        result: list[BookRecord] = []
+
+        for record in self._records:
+            if book_id is not None and record[0] != book_id:
+                continue
+            if title is not None and record[1] != title:
+                continue
+            if author is not None and record[2] != author:
+                continue
+            if year is not None and record[3] != year:
+                continue
+            if genre is not None and record[4] != genre:
+                continue
+            result.append(record)
+
+        return result
+
+    def update_record(
+        self,
+        book_id: int,
+        title: Optional[str] = None,
+        author: Optional[str] = None,
+        year: Optional[int] = None,
+        genre: Optional[str] = None,
+    ) -> bool:
+        for i, record in enumerate(self._records):
+            if record[0] == book_id:
+                new_record: BookRecord = (
+                    record[0],
+                    title.strip() if title else record[1],
+                    author.strip() if author else record[2],
+                    year if year is not None else record[3],
+                    genre.strip() if genre else record[4],
+                )
+                self._records[i] = new_record
+                return True
+        return False
+
+    def delete_record(self, book_id: int) -> bool:
+        for i, record in enumerate(self._records):
+            if record[0] == book_id:
+                self._records.pop(i)
+                return True
+        return False
+
+    def get_all_records(self) -> list[BookRecord]:
+        return self._records.copy()
+
+    def get_record_count(self) -> int:
+        return len(self._records)
