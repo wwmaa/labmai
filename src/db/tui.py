@@ -1,194 +1,144 @@
-from .backend import memory
-def show_menu():
-    print("\n" + "=" * 40)
-    print("База данных книг")
-    print("=" * 40)
-    print("1. Добавить книгу")
-    print("2. Показать все книги")
-    print("3. Найти книги")
-    print("4. Обновить книгу")
-    print("5. Удалить книгу")
-    print("0. Выход")
-    print("=" * 40)
+from src.db.backend.memory import MemoryDatabase
+from src.db.backend.file import FileDatabase
 
-def add_book_ui():
+class TUI:
+    def __init__(self):
+        print("\nВыберите тип базы данных:")
+        print("1. In-memory (данные не сохраняются)")
+        print("2. File database (данные сохраняются в файлы)")
+        choice = input("Ваш выбор (1 или 2): ").strip()
+        if choice == "2":
+            self.db = FileDatabase()
+            print("Выбрана файловая база данных. Данные будут сохранены в папке 'data/'")
+        else:
+            self.db = MemoryDatabase()
+            print("Выбрана in-memory база данных. Данные будут потеряны после закрытия программы.")
 
-    print("\nДобавление книги")
-    title = input("Название: ").strip()
-    if not title:
-        print("Ошибка: название не может быть пустым!")
-        return
+    def run(self):
+        while True:
+            print("\n" + "=" * 40)
+            print("      БАЗА ДАННЫХ КНИГ")
+            print("=" * 40)
+            print("1. Создать таблицу")
+            print("2. Добавить книгу")
+            print("3. Показать все книги")
+            print("4. Найти книги")
+            print("5. Обновить книгу")
+            print("6. Удалить книгу")
+            print("7. Показать все таблицы")
+            print("0. Выход")
+            print("=" * 40)
 
-    author = input("Автор: ").strip()
-    if not author:
-        print("Ошибка: автор не может быть пустым!")
-        return
+            choice = input("Выберите действие: ").strip()
 
-    try:
-        year = int(input("Год издания: "))
-    except ValueError:
-        print("Ошибка: введите число!")
-        return
+            if choice == "1":
+                name = input("Имя таблицы: ").strip()
+                cols = input("Колонки (через пробел): ").strip().split()
+                try:
+                    self.db.create_table(name, tuple(cols))
+                    print(f"Таблица '{name}' создана!")
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
-    genre = input("Жанр: ").strip()
+            elif choice == "2":
+                name = input("Имя таблицы: ").strip()
+                try:
+                    table = self.db._load_table(name)
+                    record = {}
+                    for col in table.columns:
+                        val = input(f"{col}: ").strip()
+                        if col == "year":
+                            val = int(val)
+                        record[col] = val
+                    self.db.insert_record(name, record)
+                    print("Книга добавлена!")
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
-    memory.create_book(title, author, year, genre)
+            elif choice == "3":
+                name = input("Имя таблицы: ").strip()
+                try:
+                    records = self.db.select_records(name)
+                    if not records:
+                        print("Нет записей.")
+                    for r in records:
+                        print(r)
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
+            elif choice == "4":
+                name = input("Имя таблицы: ").strip()
+                try:
+                    table = self.db._load_table(name)
+                    filters = {}
+                    for col in table.columns:
+                        val = input(f"{col} (Enter - пропустить): ").strip()
+                        if val:
+                            if col == "year":
+                                val = int(val)
+                            filters[col] = val
+                    records = self.db.select_records(name, **filters)
+                    if not records:
+                        print("Не найдено.")
+                    for r in records:
+                        print(r)
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
-def show_all_books_ui():
-    print("\n--- ВСЕ КНИГИ ---")
+            elif choice == "5":
+                name = input("Имя таблицы: ").strip()
+                try:
+                    table = self.db._load_table(name)
+                    book_id = int(input("ID книги: ").strip())
+                    updates = {}
+                    for col in table.columns:
+                        if col == "id":
+                            continue
+                        val = input(f"{col} (Enter - не менять): ").strip()
+                        if val:
+                            if col == "year":
+                                val = int(val)
+                            updates[col] = val
+                    count = self.db.update_records(name, updates, id=book_id)
+                    if count > 0:
+                        print("Книга обновлена!")
+                    else:
+                        print("Книга не найдена.")
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
-    books = memory.get_all_books()
+            elif choice == "6":
+                name = input("Имя таблицы: ").strip()
+                book_id = int(input("ID книги: ").strip())
+                confirm = input("Удалить? (да/нет): ").strip().lower()
+                if confirm == "да":
+                    count = self.db.delete_records(name, id=book_id)
+                    if count > 0:
+                        print("Книга удалена!")
+                    else:
+                        print("Книга не найдена.")
 
-    if not books:
-        print("Нет книг в базе данных.")
-        return
+            elif choice == "7":
+                try:
+                    import os
+                    if os.path.exists("data"):
+                        files = os.listdir("data")
+                        for f in files:
+                            print(f.replace(".json", ""))
+                    else:
+                        print("Нет таблиц.")
+                except:
+                    print("Нет таблиц.")
 
-    print("\nID | Название | Автор | Год | Жанр")
-    print("-" * 60)
+            elif choice == "0":
+                print("До свидания!")
+                break
+            else:
+                print("Неверный выбор.")
 
-    for book in books:
-        print(f"{book['id']} | {book['title']} | {book['author']} | {book['year']} | {book['genre']}")
-
-    print(f"\nВсего книг: {len(books)}")
-
-
-def find_books_ui():
-    print("\n--- ПОИСК КНИГ ---")
-    print("(оставьте поле пустым, чтобы не учитывать его)")
-
-    title = input("Название: ").strip()
-    if title == "":
-        title = None
-
-    author = input("Автор: ").strip()
-    if author == "":
-        author = None
-
-    year_input = input("Год: ").strip()
-    if year_input == "":
-        year = None
-    else:
-        try:
-            year = int(year_input)
-        except ValueError:
-            print("Ошибка: год должен быть числом!")
-            return
-
-    genre = input("Жанр: ").strip()
-    if genre == "":
-        genre = None
-
-    found = memory.find_books(title, author, year, genre)
-    if not found:
-        print("Книги не найдены.")
-        return
-    print(f"\nНайдено книг: {len(found)}")
-    print("\nID | Название | Автор | Год | Жанр")
-    print("-" * 60)
-    for book in found:
-        print(f"{book['id']} | {book['title']} | {book['author']} | {book['year']} | {book['genre']}")
-
-def update_book_ui():
-    print("\nОбновление инфформации о книге")
-
-    try:
-        book_id = int(input("Введите ID книги для обновления: "))
-    except ValueError:
-        print("Ошибка: ID должен быть числом!")
-        return
-
-    books = memory.get_all_books()
-    book_to_update = None
-
-    for book in books:
-        if book["id"] == book_id:
-            book_to_update = book
-            break
-
-    if not book_to_update:
-        print(f"Книга с ID {book_id} не найдена!")
-        return
-
-    print(
-        f"\nТекущие данные: {book_to_update['title']} | {book_to_update['author']} | {book_to_update['year']} | {book_to_update['genre']}")
-    print("\n(оставьте поле пустым, чтобы не менять)")
-
-    title = input(f"Новое название [{book_to_update['title']}]: ").strip()
-    if title == "":
-        title = None
-
-    author = input(f"Новый автор [{book_to_update['author']}]: ").strip()
-    if author == "":
-        author = None
-
-    year_input = input(f"Новый год [{book_to_update['year']}]: ").strip()
-    if year_input == "":
-        year = None
-    else:
-        try:
-            year = int(year_input)
-        except ValueError:
-            print("Ошибка: год должен быть числом!")
-            return
-
-    genre = input(f"Новый жанр [{book_to_update['genre']}]: ").strip()
-    if genre == "":
-        genre = None
-
-    memory.update_book(book_id, title, author, year, genre)
-
-
-def delete_book_ui():
-    print("\nУдаление книги")
-
-    try:
-        book_id = int(input("Введите ID книги для удаления: "))
-    except ValueError:
-        print("Ошибка: ID должен быть числом!")
-        return
-    books = memory.get_all_books()
-    book_exists = False
-
-    for book in books:
-        if book["id"] == book_id:
-            book_exists = True
-            print(f"\nКнига для удаления: {book['title']} | {book['author']}")
-            break
-
-    if not book_exists:
-        print(f"Книга с ID {book_id} не найдена!")
-        return
-    confirm = input("\nВы уверены, что хотите удалить? (да/нет): ").strip().lower()
-
-    if confirm == "да":
-        memory.delete_book(book_id)
-    else:
-        print("Удаление отменено.")
+            input("\nНажмите Enter для продолжения...")
 
 
 def run():
-    print("\nДобро пожаловать в базу данных книг!")
-
-    while True:
-        show_menu()
-
-        choice = input("Выберите действие: ").strip()
-
-        if choice == "1":
-            add_book_ui()
-        elif choice == "2":
-            show_all_books_ui()
-        elif choice == "3":
-            find_books_ui()
-        elif choice == "4":
-            update_book_ui()
-        elif choice == "5":
-            delete_book_ui()
-        elif choice == "0":
-            print("\nДо свидания!")
-            break
-        else:
-            print("Ошибка: неверный выбор. Попробуйте снова.")
-
-        input("\nНажмите Enter для продолжения")
+    ui = TUI()
+    ui.run()
