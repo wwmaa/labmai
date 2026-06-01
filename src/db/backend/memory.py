@@ -1,5 +1,5 @@
 from typing import Optional
-from .errors import InvalidYearError, DuplicateIDError
+from .errors import InvalidYearError, DuplicateIDError, RecordNotFoundError
 
 type BookRecord = tuple[int, str, str, int, str]
 
@@ -17,7 +17,7 @@ class BookTable:
         genre: str,
     ) -> BookRecord:
         if year < 0:
-            raise InvalidYearError("Поле year не может быть отрицательным.")
+            raise InvalidYearError("Год не может быть отрицательным.")
 
         if any(record[0] == book_id for record in self._records):
             raise DuplicateIDError(f"Запись с id={book_id} уже существует.")
@@ -70,6 +70,8 @@ class BookTable:
     ) -> bool:
         for i, record in enumerate(self._records):
             if record[0] == book_id:
+                if year is not None and year < 0:
+                    raise InvalidYearError("Год не может быть отрицательным.")
                 new_record: BookRecord = (
                     record[0],
                     title.strip() if title else record[1],
@@ -79,14 +81,14 @@ class BookTable:
                 )
                 self._records[i] = new_record
                 return True
-        return False
+        raise RecordNotFoundError(f"Запись с id={book_id} не найдена.")
 
     def delete_record(self, book_id: int) -> bool:
         for i, record in enumerate(self._records):
             if record[0] == book_id:
                 self._records.pop(i)
                 return True
-        return False
+        raise RecordNotFoundError(f"Запись с id={book_id} не найдена.")
 
     def get_all_records(self) -> list[BookRecord]:
         return self._records.copy()
@@ -95,7 +97,6 @@ class BookTable:
         return len(self._records)
 
     def get_record_by_id(self, book_id: int) -> Optional[BookRecord]:
-        """Возвращает запись по ID или None, если не найдена."""
         for record in self._records:
             if record[0] == book_id:
                 return record

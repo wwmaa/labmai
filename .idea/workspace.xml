@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="104867a6-5405-442c-8ad2-852aefe5afcd" name="Changes" comment="Реализована in-memory база данных книг&#10;&#10;- Реализованы CRUD операции (создание, чтение, обновление, удаление)&#10;- Добавлена фильтрация записей по одному или нескольким полям&#10;- Создан консольный текстовый интерфейс с меню&#10;- Добавлена обработка ошибок ввода&#10;- Реализована работа с несколькими таблицами&#10;- Оформлена документация в README.md&#10;&#10;Структура проекта:&#10;src/db/__main__.py - точка входа&#10;src/db/tui.py - пользовательский интерфейс&#10;src/db/backend/memory.py - хранение данных и CRUD операции">
-      <change afterPath="$PROJECT_DIR$/src/db/backend/errors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/backend/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/backend/memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.coverage" beforeDir="false" afterPath="$PROJECT_DIR$/.coverage" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
