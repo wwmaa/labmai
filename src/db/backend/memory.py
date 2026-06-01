@@ -93,3 +93,10 @@ class BookTable:
 
     def get_record_count(self) -> int:
         return len(self._records)
+
+    def get_record_by_id(self, book_id: int) -> Optional[BookRecord]:
+        """Возвращает запись по ID или None, если не найдена."""
+        for record in self._records:
+            if record[0] == book_id:
+                return record
+        return None
