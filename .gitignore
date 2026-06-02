@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.idea/
+.coverage
+coverage.xml
+htmlcov/
+*.rusc
+data/*.json
+.idea/
