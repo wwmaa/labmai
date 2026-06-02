@@ -1,5 +1,7 @@
 from src.db.backend.memory import MemoryDatabase
 from src.db.backend.file import FileDatabase
+from src.db.backend.errors import TableNotFoundError
+
 
 class TUI:
     def __init__(self):
@@ -13,6 +15,13 @@ class TUI:
         else:
             self.db = MemoryDatabase()
             print("Выбрана in-memory база данных. Данные будут потеряны после закрытия программы.")
+
+    def _get_schema(self, table_name: str):
+        try:
+            return self.db.get_table_schema(table_name)
+        except TableNotFoundError:
+            print(f"Таблица '{table_name}' не найдена!")
+            return None
 
     def run(self):
         while True:
@@ -42,10 +51,12 @@ class TUI:
 
             elif choice == "2":
                 name = input("Имя таблицы: ").strip()
+                schema = self._get_schema(name)
+                if schema is None:
+                    continue
                 try:
-                    table = self.db._load_table(name)
                     record = {}
-                    for col in table.columns:
+                    for col in schema:
                         val = input(f"{col}: ").strip()
                         if col == "year":
                             val = int(val)
@@ -68,10 +79,12 @@ class TUI:
 
             elif choice == "4":
                 name = input("Имя таблицы: ").strip()
+                schema = self._get_schema(name)
+                if schema is None:
+                    continue
                 try:
-                    table = self.db._load_table(name)
                     filters = {}
-                    for col in table.columns:
+                    for col in schema:
                         val = input(f"{col} (Enter - пропустить): ").strip()
                         if val:
                             if col == "year":
@@ -88,10 +101,16 @@ class TUI:
             elif choice == "5":
                 name = input("Имя таблицы: ").strip()
                 try:
-                    table = self.db._load_table(name)
                     book_id = int(input("ID книги: ").strip())
+                except ValueError:
+                    print("Ошибка: ID должен быть числом!")
+                    continue
+                schema = self._get_schema(name)
+                if schema is None:
+                    continue
+                try:
                     updates = {}
-                    for col in table.columns:
+                    for col in schema:
                         if col == "id":
                             continue
                         val = input(f"{col} (Enter - не менять): ").strip()
@@ -99,6 +118,9 @@ class TUI:
                             if col == "year":
                                 val = int(val)
                             updates[col] = val
+                    if not updates:
+                        print("Нет данных для обновления.")
+                        continue
                     count = self.db.update_records(name, updates, id=book_id)
                     if count > 0:
                         print("Книга обновлена!")
@@ -109,26 +131,31 @@ class TUI:
 
             elif choice == "6":
                 name = input("Имя таблицы: ").strip()
-                book_id = int(input("ID книги: ").strip())
+                try:
+                    book_id = int(input("ID книги: ").strip())
+                except ValueError:
+                    print("Ошибка: ID должен быть числом!")
+                    continue
                 confirm = input("Удалить? (да/нет): ").strip().lower()
                 if confirm == "да":
-                    count = self.db.delete_records(name, id=book_id)
-                    if count > 0:
-                        print("Книга удалена!")
-                    else:
-                        print("Книга не найдена.")
+                    try:
+                        count = self.db.delete_records(name, id=book_id)
+                        if count > 0:
+                            print("Книга удалена!")
+                        else:
+                            print("Книга не найдена.")
+                    except Exception as e:
+                        print(f"Ошибка: {e}")
 
             elif choice == "7":
                 try:
-                    import os
-                    if os.path.exists("data"):
-                        files = os.listdir("data")
-                        for f in files:
-                            print(f.replace(".json", ""))
-                    else:
+                    tables = self.db.list_tables()
+                    if not tables:
                         print("Нет таблиц.")
-                except:
-                    print("Нет таблиц.")
+                    for t in tables:
+                        print(t)
+                except Exception as e:
+                    print(f"Ошибка: {e}")
 
             elif choice == "0":
                 print("До свидания!")

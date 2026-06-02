@@ -26,6 +26,16 @@ class FileDatabase(Database):
             raise InvalidStorageDataError("Файл таблицы содержит некорректный JSON.") from e
         if "columns" not in data or "records" not in data:
             raise InvalidStorageDataError("Файл таблицы имеет некорректную структуру.")
+        if not isinstance(data["columns"], list):
+            raise InvalidStorageDataError("Поле 'columns' должно быть списком.")
+        if not isinstance(data["records"], list):
+            raise InvalidStorageDataError("Поле 'records' должно быть списком.")
+        for col in data["columns"]:
+            if not isinstance(col, str):
+                raise InvalidStorageDataError("Имена колонок должны быть строками.")
+        for record in data["records"]:
+            if not isinstance(record, dict):
+                raise InvalidStorageDataError("Записи должны быть словарями.")
         return Table(tuple(data["columns"]), data["records"])
 
     def _save_table(self, table_name: str, table: Table) -> None:
@@ -36,3 +46,9 @@ class FileDatabase(Database):
         }
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def list_tables(self) -> list[str]:
+        tables = []
+        for file in self.directory.glob("*.json"):
+            tables.append(file.stem)
+        return tables

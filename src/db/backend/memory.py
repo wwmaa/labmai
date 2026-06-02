@@ -16,3 +16,6 @@ class MemoryDatabase(Database):
 
     def _save_table(self, table_name: str, table: Table) -> None:
         self.tables[table_name] = table
+
+    def list_tables(self) -> list[str]:
+        return list(self.tables.keys())

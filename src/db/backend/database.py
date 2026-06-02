@@ -30,6 +30,10 @@ class Database(ABC):
         self._save_table(table_name, table)
         return result
 
+    def get_table_schema(self, table_name: str) -> tuple[str, ...]:
+        table = self._load_table(table_name)
+        return table.columns
+
     @abstractmethod
     def _table_exists(self, table_name: str) -> bool:
         pass
@@ -40,4 +44,8 @@ class Database(ABC):
 
     @abstractmethod
     def _save_table(self, table_name: str, table: Table) -> None:
+        pass
+
+    @abstractmethod
+    def list_tables(self) -> list[str]:
         pass
