@@ -9,6 +9,11 @@ class Table:
             for record in records:
                 self.insert_record(record)
 
+    def _validate_columns(self, names: list[str]) -> None:
+        for name in names:
+            if name not in self.columns:
+                raise UnknownColumnError(f"Поле '{name}' не определено в таблице.")
+
     def insert_record(self, record: dict[str, Any]) -> None:
         missing = [col for col in self.columns if col not in record]
         if missing:
@@ -19,9 +24,7 @@ class Table:
         self.records.append(record.copy())
 
     def select_records(self, **filters: Any) -> list[dict[str, Any]]:
-        unknown = [key for key in filters if key not in self.columns]
-        if unknown:
-            raise UnknownColumnError(f"Поле '{unknown[0]}' не определено в таблице.")
+        self._validate_columns(list(filters.keys()))
         if not filters:
             return [r.copy() for r in self.records]
         result = []
@@ -31,9 +34,8 @@ class Table:
         return result
 
     def update_records(self, updates: dict[str, Any], **filters: Any) -> int:
-        unknown = [key for key in updates if key not in self.columns]
-        if unknown:
-            raise UnknownColumnError(f"Поле '{unknown[0]}' не определено в таблице.")
+        self._validate_columns(list(updates.keys()))
+        self._validate_columns(list(filters.keys()))
         count = 0
         for record in self.records:
             if all(record.get(key) == value for key, value in filters.items()):
@@ -43,6 +45,7 @@ class Table:
         return count
 
     def delete_records(self, **filters: Any) -> int:
+        self._validate_columns(list(filters.keys()))
         if not filters:
             count = len(self.records)
             self.records.clear()
