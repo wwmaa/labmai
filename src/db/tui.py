@@ -1,6 +1,13 @@
 from src.db.backend.memory import MemoryDatabase
 from src.db.backend.file import FileDatabase
-from src.db.backend.errors import TableNotFoundError
+from src.db.backend.errors import (
+    TableNotFoundError,
+    TableAlreadyExistsError,
+    MissingColumnError,
+    UnknownColumnError,
+    InvalidStorageDataError,
+    DatabaseError
+)
 
 
 class TUI:
@@ -19,8 +26,8 @@ class TUI:
     def _get_schema(self, table_name: str):
         try:
             return self.db.get_table_schema(table_name)
-        except TableNotFoundError:
-            print(f"Таблица '{table_name}' не найдена!")
+        except TableNotFoundError as e:
+            print(f"Ошибка: {e}")
             return None
 
     def run(self):
@@ -46,8 +53,10 @@ class TUI:
                 try:
                     self.db.create_table(name, tuple(cols))
                     print(f"Таблица '{name}' создана!")
-                except Exception as e:
+                except TableAlreadyExistsError as e:
                     print(f"Ошибка: {e}")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "2":
                 name = input("Имя таблицы: ").strip()
@@ -63,8 +72,12 @@ class TUI:
                         record[col] = val
                     self.db.insert_record(name, record)
                     print("Книга добавлена!")
-                except Exception as e:
-                    print(f"Ошибка: {e}")
+                except (MissingColumnError, UnknownColumnError) as e:
+                    print(f"Ошибка структуры: {e}")
+                except ValueError:
+                    print("Ошибка: год должен быть числом!")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "3":
                 name = input("Имя таблицы: ").strip()
@@ -74,8 +87,10 @@ class TUI:
                         print("Нет записей.")
                     for r in records:
                         print(r)
-                except Exception as e:
+                except TableNotFoundError as e:
                     print(f"Ошибка: {e}")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "4":
                 name = input("Имя таблицы: ").strip()
@@ -95,8 +110,12 @@ class TUI:
                         print("Не найдено.")
                     for r in records:
                         print(r)
-                except Exception as e:
-                    print(f"Ошибка: {e}")
+                except UnknownColumnError as e:
+                    print(f"Ошибка: поле '{e}' не найдено в таблице")
+                except ValueError:
+                    print("Ошибка: год должен быть числом!")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "5":
                 name = input("Имя таблицы: ").strip()
@@ -126,8 +145,12 @@ class TUI:
                         print("Книга обновлена!")
                     else:
                         print("Книга не найдена.")
-                except Exception as e:
-                    print(f"Ошибка: {e}")
+                except (UnknownColumnError, MissingColumnError) as e:
+                    print(f"Ошибка структуры: {e}")
+                except ValueError:
+                    print("Ошибка: год должен быть числом!")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "6":
                 name = input("Имя таблицы: ").strip()
@@ -144,8 +167,10 @@ class TUI:
                             print("Книга удалена!")
                         else:
                             print("Книга не найдена.")
-                    except Exception as e:
+                    except TableNotFoundError as e:
                         print(f"Ошибка: {e}")
+                    except DatabaseError as e:
+                        print(f"Ошибка базы данных: {e}")
 
             elif choice == "7":
                 try:
@@ -154,8 +179,8 @@ class TUI:
                         print("Нет таблиц.")
                     for t in tables:
                         print(t)
-                except Exception as e:
-                    print(f"Ошибка: {e}")
+                except DatabaseError as e:
+                    print(f"Ошибка базы данных: {e}")
 
             elif choice == "0":
                 print("До свидания!")

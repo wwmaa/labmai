@@ -36,7 +36,7 @@ In-memory версия (MemoryDatabase) хранит все таблицы и з
 
 ## Пользовательские исключения
 
-Для обработки ошибок созданы собственные классы исключений: DatabaseError (базовый класс), TableAlreadyExistsError (таблица уже существует), TableNotFoundError (таблица не найдена), MissingColumnError (отсутствует обязательное поле), UnknownColumnError (неизвестное поле), InvalidStorageDataError (повреждённый файл таблицы), InvalidYearError (некорректный год), DuplicateIDError (дублирующийся ID).
+Для обработки ошибок созданы собственные классы исключений: DatabaseError (базовый класс), TableAlreadyExistsError (таблица уже существует), TableNotFoundError (таблица не найдена), MissingColumnError (отсутствует обязательное поле), UnknownColumnError (неизвестное поле), InvalidStorageDataError (повреждённый файл таблицы).
 
 ## Тестирование
 

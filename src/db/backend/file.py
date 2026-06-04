@@ -28,6 +28,8 @@ class FileDatabase(Database):
             raise InvalidStorageDataError(f"Нет доступа к файлу: {path}") from e
         except OSError as e:
             raise InvalidStorageDataError(f"Ошибка при чтении файла: {e}") from e
+        if not isinstance(data, dict):
+            raise InvalidStorageDataError("Файл таблицы должен содержать JSON-объект (словарь).")
         if "columns" not in data or "records" not in data:
             raise InvalidStorageDataError("Файл таблицы имеет некорректную структуру.")
         if not isinstance(data["columns"], list):
