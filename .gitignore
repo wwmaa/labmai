@@ -1,10 +1,9 @@
+.idea/
+.coverage
+.pytest_cache/
 __pycache__/
 *.pyc
 *.pyo
-.idea/
-.coverage
-coverage.xml
-htmlcov/
 *.rusc
 data/*.json
-.idea/
+htmlcov/
