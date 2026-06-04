@@ -15,9 +15,3 @@ class UnknownColumnError(DatabaseError):
 
 class InvalidStorageDataError(DatabaseError):
     pass
-
-class InvalidYearError(DatabaseError):
-    pass
-
-class DuplicateIDError(DatabaseError):
-    pass

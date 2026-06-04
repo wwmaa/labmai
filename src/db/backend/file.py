@@ -24,6 +24,12 @@ class FileDatabase(Database):
                 data = json.load(f)
         except json.JSONDecodeError as e:
             raise InvalidStorageDataError("Файл таблицы содержит некорректный JSON.") from e
+        except PermissionError as e:
+            raise InvalidStorageDataError(f"Нет доступа к файлу: {path}") from e
+        except OSError as e:
+            raise InvalidStorageDataError(f"Ошибка при чтении файла: {e}") from e
+        if not isinstance(data, dict):
+            raise InvalidStorageDataError("Файл таблицы должен содержать JSON-объект (словарь).")
         if "columns" not in data or "records" not in data:
             raise InvalidStorageDataError("Файл таблицы имеет некорректную структуру.")
         if not isinstance(data["columns"], list):
@@ -44,8 +50,13 @@ class FileDatabase(Database):
             "columns": list(table.columns),
             "records": table.records
         }
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except PermissionError as e:
+            raise InvalidStorageDataError(f"Нет доступа для записи в файл: {path}") from e
+        except OSError as e:
+            raise InvalidStorageDataError(f"Ошибка при записи файла: {e}") from e
 
     def list_tables(self) -> list[str]:
         tables = []
